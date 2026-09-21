@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GREEN-API WABA Templates</title>
+  <style>
+    :root {
+      --green:  #3b9802;
+      --green2: #2e7a01;
+      --bg:     #0c0c0c;
+      --card:   #131313;
+      --card2:  #181818;
+      --border: #1d1d1d;
+      --text:   #e8e8e8;
+      --muted:  #555;
+      --dim:    #333;
+      --ok:     #3b9802;
+      --warn:   #d49a00;
+      --bad:    #ff4d4d;
+      --pause:  #7a7a7a;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    @keyframes spin    { to { transform: rotate(360deg); } }
+    @keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+    #app { position: relative; height: 100%; overflow: hidden; }
+    #shell { display: flex; flex-direction: column; height: 100%; min-height: 480px; overflow: hidden; }
+
+    .header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .header-title { font-size: 14px; font-weight: 700; letter-spacing: .02em; line-height: 1; }
+    .header-sub   { color: #3a3a3a; font-size: 10px; margin-top: 3px; letter-spacing: .04em; text-transform: uppercase; }
+    .header-right { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+    .badge        { color: #2a2a2a; font-size: 11px; font-family: monospace; }
+    .count-badge  { color: var(--muted); font-size: 11px; }
+
+    .search-wrap { padding: 10px 12px 6px; position: relative; flex-shrink: 0; }
+    .search-box {
+      width: 100%;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 10px 7px 30px;
+      color: var(--text);
+      font-size: 12px;
+      outline: none;
+    }
+    .search-box:focus { border-color: #2a2a2a; }
+    .search-box::placeholder { color: var(--dim); }
+    .search-icon { position: absolute; left: 22px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+
+    .chips { display: flex; gap: 6px; padding: 4px 12px 10px; overflow-x: auto; flex-shrink: 0; border-bottom: 1px solid var(--border); scrollbar-width: none; }
+    .chips::-webkit-scrollbar { display: none; }
+    .chip {
+      border: 1px solid var(--border); background: transparent; color: var(--muted);
+      border-radius: 999px; padding: 3px 10px; font-size: 11px; cursor: pointer; white-space: nowrap;
+    }
+    .chip.active { border-color: var(--green2); color: var(--green); }
+    .chip small { color: #444; margin-left: 4px; }
+
+    #list-view { flex: 1; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #222 transparent; }
+    #list-view::-webkit-scrollbar { width: 4px; }
+    #list-view::-webkit-scrollbar-thumb { background: #222; border-radius: 99px; }
+
+    .tpl-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      animation: fadeIn .2s ease;
+    }
+    .tpl-item:hover { background: rgba(255,255,255,.03); }
+    .tpl-body  { flex: 1; min-width: 0; }
+    .tpl-name  { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: monospace; }
+    .tpl-meta  { font-size: 11px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tpl-preview { font-size: 11px; color: #777; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .status { font-size: 10px; padding: 2px 7px; border-radius: 4px; letter-spacing: .04em; flex-shrink: 0; font-weight: 600; }
+    .status-APPROVED { background: rgba(59,152,2,.14); color: var(--ok); }
+    .status-PENDING  { background: rgba(212,154,0,.14); color: var(--warn); }
+    .status-REJECTED, .status-FAILED { background: rgba(255,77,77,.14); color: var(--bad); }
+    .status-PAUSED   { background: rgba(122,122,122,.16); color: var(--pause); }
+    .status-UNKNOWN  { background: rgba(255,255,255,.06); color: #666; }
+
+    .chevron { color: #333; flex-shrink: 0; }
+
+    .state-center {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 8px; height: 100%; padding: 24px; color: var(--muted); font-size: 12px; text-align: center;
+    }
+    .spinner {
+      width: 28px; height: 28px;
+      border: 2.5px solid #222; border-top: 2.5px solid var(--green);
+      border-radius: 50%; animation: spin .75s linear infinite;
+    }
+    .error-icon { font-size: 28px; color: var(--bad); }
+    .empty-icon { font-size: 28px; }
+    .retry-btn {
+      margin-top: 4px; padding: 5px 14px;
+      background: transparent; border: 1px solid var(--green);
+      border-radius: 6px; color: var(--green); font-size: 12px; cursor: pointer;
+    }
+
+    #detail-view {
+      position: absolute; inset: 0; background: var(--bg);
+      display: none; flex-direction: column; animation: slideIn .2s ease; z-index: 10;
+    }
+    #detail-view.open { display: flex; }
+    .detail-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .back-btn { background: none; border: none; cursor: pointer; color: var(--green); display: flex; align-items: center; gap: 4px; font-size: 12px; padding: 0; }
+    .detail-title { font-size: 13px; font-weight: 600; font-family: monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .detail-body { flex: 1; overflow-y: auto; padding: 16px; scrollbar-width: thin; scrollbar-color: #222 transparent; }
+    .detail-body::-webkit-scrollbar { width: 4px; }
+    .detail-body::-webkit-scrollbar-thumb { background: #222; border-radius: 99px; }
+
+    .bubble {
+      background: var(--card2); border: 1px solid var(--border); border-radius: 12px;
+      padding: 12px 14px; margin-bottom: 14px; white-space: pre-wrap; word-break: break-word; font-size: 13px; line-height: 1.45;
+    }
+    .bubble .hdr { font-weight: 700; margin-bottom: 6px; }
+    .bubble .ftr { color: var(--muted); font-size: 11px; margin-top: 8px; }
+    .bubble .btns { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+    .bubble .btn { border: 1px solid #2a2a2a; border-radius: 8px; padding: 6px 10px; text-align: center; color: #6fb5ff; font-size: 12px; }
+    .bubble .btn small { color: #555; display: block; font-size: 10px; margin-top: 2px; }
+
+    .detail-row { display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { color: var(--muted); font-size: 11px; width: 88px; flex-shrink: 0; padding-top: 1px; }
+    .detail-value { font-size: 12px; word-break: break-all; flex: 1; }
+    .copy-btn { background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 5px; font-size: 10px; padding: 1px 6px; cursor: pointer; margin-left: 6px; }
+
+    .actions { display: flex; gap: 8px; margin-top: 16px; }
+    .action-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px;
+      padding: 9px 0; background: transparent; border: 1px solid var(--green2);
+      border-radius: 10px; color: var(--green); font-size: 13px; font-weight: 500; cursor: pointer;
+    }
+    .action-btn:hover { background: rgba(59,152,2,.09); }
+    .action-btn.secondary { border-color: #2a2a2a; color: var(--muted); }
+    .action-btn[disabled] { opacity: .4; cursor: default; }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <div id="shell">
+    <div class="header">
+      <svg width="26" height="26" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="50" fill="#3b9802"/>
+        <circle cx="50" cy="50" r="42" fill="none" stroke="white" stroke-width="5"/>
+        <text x="50" y="68" text-anchor="middle" font-family="Arial Black,Arial" font-weight="900" font-size="52" fill="white">G</text>
+      </svg>
+      <div>
+        <div class="header-title">GREEN-API</div>
+        <div class="header-sub">WABA Templates</div>
+      </div>
+      <div class="header-right">
+        <div class="badge" id="instance-badge"></div>
+        <div class="count-badge" id="count-badge"></div>
+      </div>
+    </div>
+
+    <div class="search-wrap">
+      <svg class="search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="2.5" stroke-linecap="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input class="search-box" id="search" type="text" placeholder="Search by name, text or language…" oninput="onSearch(this.value)">
+    </div>
+    <div class="chips" id="chips"></div>
+
+    <div id="list-view">
+      <div class="state-center"><div class="spinner"></div><div>Loading templates…</div></div>
+    </div>
+  </div>
+
+  <div id="detail-view">
+    <div class="detail-header">
+      <button class="back-btn" onclick="closeDetail()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+      </button>
+      <div class="detail-title" id="detail-title">Template</div>
+    </div>
+    <div class="detail-body" id="detail-body"></div>
+  </div>
+
+</div>
+
+<script>
+  let nextId = 1;
+  const pending = {};
+
+  window.addEventListener('message', (e) => {
+    const msg = e.data;
+    if (!msg || msg.jsonrpc !== '2.0') return;
+    if (msg.id != null && pending[msg.id]) {
+      const { resolve, reject } = pending[msg.id];
+      delete pending[msg.id];
+      msg.error ? reject(msg.error) : resolve(msg.result ?? {});
+      return;
+    }
+    if (msg.method) handleNotification(msg.method, msg.params ?? {});
+  });
+
+  function request(method, params) {
+    const id = nextId++;
+    return new Promise((resolve, reject) => {
+      pending[id] = { resolve, reject };
+      window.parent.postMessage({ jsonrpc: '2.0', id, method, params }, '*');
+    });
+  }
+
+  const TOOL_LIST = 'waba_get_templates';
+  const TOOL_SEND = 'waba_send_template';
+  const STATUSES = ['ALL', 'APPROVED', 'PENDING', 'REJECTED', 'PAUSED', 'FAILED'];
+
+  let instanceId = null;
+  let all = [];
+  let filtered = [];
+  let query = '';
+  let statusFilter = 'ALL';
+  let loaded = false;
+
+  function reportSize() {
+    const h = Math.max(480, Math.ceil(document.documentElement.scrollHeight));
+    const w = Math.ceil(document.documentElement.scrollWidth);
+    window.parent.postMessage({ jsonrpc: '2.0', method: 'ui/notifications/size-changed', params: { height: h, width: w } }, '*');
+  }
+  if (window.ResizeObserver) {
+    new ResizeObserver(() => reportSize()).observe(document.body);
+  }
+  window.addEventListener('load', reportSize);
+
+  let initializedSent = false;
+  function sendInitialized() {
+    if (initializedSent) return;
+    initializedSent = true;
+    window.parent.postMessage({ jsonrpc: '2.0', method: 'ui/notifications/initialized', params: {} }, '*');
+  }
+  request('ui/initialize', {
+    protocolVersion: '2026-01-26',
+    clientInfo: { name: 'GREEN-API WABA Templates', version: '1.0.0' },
+    capabilities: {}
+  }).then(sendInitialized).catch(() => {});
+  setTimeout(sendInitialized, 1500);
+
+  function handleNotification(method, params) {
+    if (method === 'ui/notifications/tool-input') {
+      const args = params.arguments ?? {};
+      if (args.instance_id != null) {
+        instanceId = args.instance_id;
+        document.getElementById('instance-badge').textContent = '#' + instanceId;
+      }
+      if (args.status) {
+        const s = String(args.status).toUpperCase();
+        if (STATUSES.includes(s)) statusFilter = s;
+      }
+    }
+    if (method === 'ui/notifications/tool-result') {
+      const content = params?.result?.content ?? params?.toolResult?.content ?? params.content ?? [];
+      const text = content.find?.(c => c.type === 'text');
+      if (text) parseTemplates(text.text);
+      else      showError();
+    }
+  }
+
+  function parseTemplates(raw) {
+    try {
+      const data = JSON.parse(raw);
+      all = Array.isArray(data) ? data : (Array.isArray(data.templates) ? data.templates : []);
+    } catch {
+      all = [];
+    }
+    all.sort((a, b) => (b.modifiedOn || 0) - (a.modifiedOn || 0));
+    loaded = true;
+    render();
+  }
+
+  function statusOf(t) {
+    const s = String(t.status || '').toUpperCase();
+    return STATUSES.includes(s) ? s : 'UNKNOWN';
+  }
+
+  function applyFilter() {
+    const q = query.toLowerCase();
+    filtered = all.filter(t => {
+      if (statusFilter !== 'ALL' && statusOf(t) !== statusFilter) return false;
+      if (!q) return true;
+      return [t.elementName, t.data, t.languageCode, t.category, t.templateType, t.templateId]
+        .some(v => String(v || '').toLowerCase().includes(q));
+    });
+  }
+
+  function onSearch(q) { query = q; render(); }
+  function setStatus(s) { statusFilter = s; render(); }
+
+  function render() {
+    applyFilter();
+    renderChips();
+    renderList();
+  }
+
+  function renderChips() {
+    const counts = {};
+    for (const t of all) counts[statusOf(t)] = (counts[statusOf(t)] || 0) + 1;
+    document.getElementById('chips').innerHTML = STATUSES.map(s => {
+      const n = s === 'ALL' ? all.length : (counts[s] || 0);
+      return `<button class="chip ${s === statusFilter ? 'active' : ''}" onclick="setStatus('${s}')">${s === 'ALL' ? 'All' : capitalize(s)}<small>${n}</small></button>`;
+    }).join('');
+  }
+
+  function renderList() {
+    const listEl = document.getElementById('list-view');
+    const countEl = document.getElementById('count-badge');
+
+    if (!loaded) return;
+
+    if (all.length === 0) {
+      listEl.innerHTML = '<div class="state-center"><div class="empty-icon">📄</div><div>No templates yet</div><div style="color:#444">Create one with waba_create_template</div></div>';
+      countEl.textContent = '';
+      return;
+    }
+
+    countEl.textContent = filtered.length === all.length
+      ? all.length + ' templates'
+      : filtered.length + ' of ' + all.length;
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = '<div class="state-center"><div class="empty-icon">🔍</div><div>No templates match</div></div>';
+      return;
+    }
+
+    listEl.innerHTML = filtered.map((t, i) => {
+      const st = statusOf(t);
+      return `<div class="tpl-item" onclick="openDetail(${indexOf(t)})">
+        <div class="tpl-body">
+          <div class="tpl-name">${escHtml(t.elementName || t.templateId || '—')}</div>
+          <div class="tpl-meta">${escHtml([t.category, t.templateType, t.languageCode].filter(Boolean).join(' · '))}${t.modifiedOn ? ' · ' + fmtDate(t.modifiedOn) : ''}</div>
+          <div class="tpl-preview">${escHtml(bodyText(t))}</div>
+        </div>
+        <span class="status status-${st}">${st}</span>
+        <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>`;
+    }).join('');
+  }
+
+  function indexOf(t) { return all.indexOf(t); }
+
+  function showError() {
+    loaded = true;
+    document.getElementById('list-view').innerHTML =
+      '<div class="state-center"><div class="error-icon">✗</div><div>Failed to load templates</div><button class="retry-btn" onclick="doRefresh()">Try again</button></div>';
+  }
+
+  async function doRefresh() {
+    if (!instanceId) return;
+    document.getElementById('list-view').innerHTML = '<div class="state-center"><div class="spinner"></div><div>Loading templates…</div></div>';
+    try {
+      const res = await request('tools/call', { name: TOOL_LIST, arguments: { instance_id: instanceId } });
+      const text = (res?.content ?? []).find(c => c.type === 'text');
+      if (text) parseTemplates(text.text);
+      else      showError();
+    } catch { showError(); }
+  }
+
+  function parseMeta(t) {
+    try { return JSON.parse(t.containerMeta || '{}') || {}; } catch { return {}; }
+  }
+
+  function bodyText(t) {
+    const cm = parseMeta(t);
+    return cm.data || t.data || '';
+  }
+
+  function openDetail(i) {
+    const t = all[i];
+    if (!t) return;
+    const st = statusOf(t);
+    const cm = parseMeta(t);
+    const buttons = Array.isArray(cm.buttons) ? cm.buttons : [];
+    const id = t.templateId || t.id || '';
+
+    document.getElementById('detail-title').textContent = t.elementName || id;
+
+    const rows = [
+      ['Status', `<span class="status status-${st}">${st}</span>`],
+      ['Template ID', id ? `${escHtml(id)}<button class="copy-btn" onclick="copyText('${escAttr(id)}')">copy</button>` : '—'],
+      ['Category', escHtml(t.category || '—')],
+      ['Type', escHtml(t.templateType || '—')],
+      ['Language', escHtml(t.languageCode || '—')],
+      t.vertical ? ['Purpose', escHtml(t.vertical)] : null,
+      t.quality && t.quality !== 'UNKNOWN' ? ['Quality', escHtml(t.quality)] : null,
+      t.createdOn ? ['Created', fmtDate(t.createdOn)] : null,
+      t.modifiedOn ? ['Modified', fmtDate(t.modifiedOn)] : null,
+    ].filter(Boolean);
+
+    document.getElementById('detail-body').innerHTML = `
+      <div class="bubble">
+        ${cm.header ? `<div class="hdr">${escHtml(cm.header)}</div>` : ''}
+        ${escHtml(cm.data || t.data || '')}
+        ${cm.footer ? `<div class="ftr">${escHtml(cm.footer)}</div>` : ''}
+        ${buttons.length ? `<div class="btns">${buttons.map(b => `<div class="btn">${escHtml(b.text || b.type || '')}<small>${escHtml(buttonHint(b))}</small></div>`).join('')}</div>` : ''}
+      </div>
+      ${rows.map(([label, val]) => `
+        <div class="detail-row">
+          <div class="detail-label">${escHtml(label)}</div>
+          <div class="detail-value">${val}</div>
+        </div>`).join('')}
+      <div class="actions">
+        <button class="action-btn" ${st === 'APPROVED' ? '' : 'disabled'} onclick="useTemplate(${i})">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          ${st === 'APPROVED' ? 'Use template' : 'Not approved'}
+        </button>
+        <button class="action-btn secondary" onclick="doRefresh(); closeDetail()">Refresh</button>
+      </div>`;
+
+    document.getElementById('detail-view').classList.add('open');
+  }
+
+  function buttonHint(b) {
+    const type = String(b.type || '').toUpperCase();
+    if (type === 'URL' && b.url) return b.url;
+    if (type === 'PHONE_NUMBER' && b.phone_number) return b.phone_number;
+    if (type === 'OTP') return 'copy code';
+    return type.toLowerCase().replace('_', ' ');
+  }
+
+  function closeDetail() {
+    document.getElementById('detail-view').classList.remove('open');
+  }
+
+  async function useTemplate(i) {
+    const t = all[i];
+    if (!t) return;
+    const id = t.templateId || t.id || '';
+    try {
+      await request('ui/message', {
+        role: 'user',
+        content: [{ type: 'text', text: `Send the template "${t.elementName}" (templateId ${id}) with ${TOOL_SEND}. Ask me for the recipient chat ID and the parameter values first.` }]
+      });
+    } catch {}
+  }
+
+  function copyText(text) {
+    try { navigator.clipboard.writeText(text); } catch {}
+  }
+
+  function fmtDate(ms) {
+    try { return new Date(Number(ms)).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); } catch { return ''; }
+  }
+
+  function capitalize(s) { return s.charAt(0) + s.slice(1).toLowerCase(); }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function escAttr(str) {
+    return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  }
+</script>
+</body>
+</html>

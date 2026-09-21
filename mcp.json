@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "green-api-waba": {
+      "url": "https://mcp-waba.green-api.com/mcp"
+    }
+  }
+}

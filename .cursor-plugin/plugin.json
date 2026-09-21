@@ -1,0 +1,13 @@
+{
+  "name": "green-api-waba",
+  "displayName": "GREEN-API WhatsApp Business (WABA)",
+  "version": "0.1.0",
+  "description": "Send WhatsApp Business template and session messages, manage message templates and receive notifications through GREEN-API.",
+  "author": {
+    "name": "GREEN-API",
+    "email": "support@green-api.com"
+  },
+  "license": "MIT",
+  "keywords": ["whatsapp", "waba", "whatsapp-business", "green-api", "mcp", "messaging", "templates"],
+  "logo": "internal/infrastructure/templates/greenapi.png"
+}
