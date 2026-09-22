@@ -3,7 +3,7 @@
   "name": "com.greenapi/whatsapp-waba",
   "title": "Green API WhatsApp Business (WABA)",
   "description": "MCP gateway for the official WhatsApp Business API via Green API — send template and session messages, manage message templates, receive notifications.",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "repository": {
     "url": "https://github.com/green-api/mcp-gateway-waba",
     "source": "github"
