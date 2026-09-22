@@ -134,6 +134,13 @@ func extractInstanceID(req mcp.ReadResourceRequest) (uint64, error) {
 		return 0, fmt.Errorf("missing {id} in resource URI: %s", req.Params.URI)
 	}
 
+	if values, ok := raw.([]string); ok {
+		if len(values) == 0 {
+			return 0, fmt.Errorf("missing {id} in resource URI: %s", req.Params.URI)
+		}
+		raw = values[0]
+	}
+
 	switch v := raw.(type) {
 	case string:
 		var id uint64
