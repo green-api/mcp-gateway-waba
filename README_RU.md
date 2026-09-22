@@ -1,10 +1,10 @@
-# green-api-mcp-gateway-waba
+# mcp-gateway-waba
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Go Version](https://img.shields.io/github/go-mod/go-version/green-api/green-api-mcp-gateway-waba/main)](https://go.dev/)
-[![release](https://img.shields.io/github/v/release/green-api/green-api-mcp-gateway-waba)](https://github.com/green-api/green-api-mcp-gateway-waba/releases)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/green-api/mcp-gateway-waba/main)](https://go.dev/)
+[![release](https://img.shields.io/github/v/release/green-api/mcp-gateway-waba)](https://github.com/green-api/mcp-gateway-waba/releases)
 [![Protocol: MCP](https://img.shields.io/badge/Protocol-MCP-orange.svg)](https://modelcontextprotocol.io)
-[![Go Report Card](https://goreportcard.com/badge/github.com/green-api/green-api-mcp-gateway-waba)](https://goreportcard.com/report/github.com/green-api/green-api-mcp-gateway-waba)
+[![Go Report Card](https://goreportcard.com/badge/github.com/green-api/mcp-gateway-waba)](https://goreportcard.com/report/github.com/green-api/mcp-gateway-waba)
 
 - [Documentation in English](README.md)
 
@@ -66,7 +66,7 @@ internal/
 ## Сборка
 
 ```bash
-go build -o green-api-mcp-gateway-waba ./cmd/server
+go build -o mcp-gateway-waba ./cmd/server
 ```
 
 Требуется Go 1.25+.
@@ -153,10 +153,10 @@ logging:
 # С переменными окружения
 export GREEN_API_INSTANCE_ID=1101000001
 export GREEN_API_TOKEN=your_token
-./green-api-mcp-gateway-waba
+./mcp-gateway-waba
 
 # С файлом конфигурации
-./green-api-mcp-gateway-waba --config config.yaml
+./mcp-gateway-waba --config config.yaml
 ```
 
 ## Интеграция
@@ -169,7 +169,7 @@ export GREEN_API_TOKEN=your_token
 {
   "mcpServers": {
     "waba": {
-      "command": "/path/to/green-api-mcp-gateway-waba",
+      "command": "/path/to/mcp-gateway-waba",
       "args": ["--config", "/path/to/config.yaml"]
     }
   }
@@ -193,12 +193,12 @@ export GREEN_API_TOKEN=your_token
 ### Docker
 
 ```bash
-docker build -t green-api-mcp-gateway-waba .
+docker build -t mcp-gateway-waba .
 
 docker run --rm -i \
   -e GREEN_API_INSTANCE_ID=1101000001 \
   -e GREEN_API_TOKEN=your_token \
-  green-api-mcp-gateway-waba
+  mcp-gateway-waba
 ```
 
 ## Инструменты MCP
@@ -285,7 +285,7 @@ go mod tidy
 go build ./...
 go test ./...
 gofmt -w .
-GOOS=linux GOARCH=amd64 go build -o green-api-mcp-gateway-waba-linux ./cmd/server
+GOOS=linux GOARCH=amd64 go build -o mcp-gateway-waba-linux ./cmd/server
 ```
 
 ## Лицензия (License)

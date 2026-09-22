@@ -8,9 +8,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/domain"
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/infrastructure"
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/infrastructure/config"
+	"github.com/green-api/mcp-gateway-waba/internal/domain"
+	"github.com/green-api/mcp-gateway-waba/internal/infrastructure"
+	"github.com/green-api/mcp-gateway-waba/internal/infrastructure/config"
 	"github.com/mark3labs/mcp-go/mcp"
 	mcpgo "github.com/mark3labs/mcp-go/server"
 )

@@ -9,15 +9,15 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/application"
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/domain"
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/infrastructure"
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/infrastructure/config"
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/infrastructure/greenapi"
-	mcpserver "github.com/green-api/green-api-mcp-gateway-waba/internal/infrastructure/mcp"
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/infrastructure/monitoring"
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/infrastructure/ratelimit"
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/infrastructure/webhook"
+	"github.com/green-api/mcp-gateway-waba/internal/application"
+	"github.com/green-api/mcp-gateway-waba/internal/domain"
+	"github.com/green-api/mcp-gateway-waba/internal/infrastructure"
+	"github.com/green-api/mcp-gateway-waba/internal/infrastructure/config"
+	"github.com/green-api/mcp-gateway-waba/internal/infrastructure/greenapi"
+	mcpserver "github.com/green-api/mcp-gateway-waba/internal/infrastructure/mcp"
+	"github.com/green-api/mcp-gateway-waba/internal/infrastructure/monitoring"
+	"github.com/green-api/mcp-gateway-waba/internal/infrastructure/ratelimit"
+	"github.com/green-api/mcp-gateway-waba/internal/infrastructure/webhook"
 )
 
 // version is injected at build time via -ldflags "-X main.version=<tag>".
@@ -30,7 +30,7 @@ func main() {
 	flag.Parse()
 
 	log.SetOutput(os.Stderr)
-	log.Printf("green-api-mcp-gateway-waba starting... version=%s", version)
+	log.Printf("mcp-gateway-waba starting... version=%s", version)
 
 	// --- Load configuration ---
 	// Auto-detect config/config.yaml when --config flag is not provided.

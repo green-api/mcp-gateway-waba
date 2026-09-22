@@ -15,8 +15,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/application"
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/domain"
+	"github.com/green-api/mcp-gateway-waba/internal/application"
+	"github.com/green-api/mcp-gateway-waba/internal/domain"
 )
 
 // NotificationHandler is called for every notification received from Green API.

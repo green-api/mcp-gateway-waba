@@ -5,7 +5,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/infrastructure/ratelimit"
+	"github.com/green-api/mcp-gateway-waba/internal/infrastructure/ratelimit"
 )
 
 // TestRateLimiterStress verifies that rate limiting kicks in under high load.

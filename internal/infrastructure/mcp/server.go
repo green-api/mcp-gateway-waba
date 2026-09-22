@@ -11,10 +11,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/application"
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/infrastructure"
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/infrastructure/config"
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/infrastructure/ratelimit"
+	"github.com/green-api/mcp-gateway-waba/internal/application"
+	"github.com/green-api/mcp-gateway-waba/internal/infrastructure"
+	"github.com/green-api/mcp-gateway-waba/internal/infrastructure/config"
+	"github.com/green-api/mcp-gateway-waba/internal/infrastructure/ratelimit"
 	"github.com/mark3labs/mcp-go/mcp"
 	mcpgo "github.com/mark3labs/mcp-go/server"
 )
@@ -39,7 +39,7 @@ func NewServer(credentials application.CredentialStore, client application.Whats
 	logger := slog.New(jsonHandler)
 
 	s := &Server{
-		mcp: mcpgo.NewMCPServer("green-api-mcp-gateway-waba", version,
+		mcp: mcpgo.NewMCPServer("mcp-gateway-waba", version,
 			mcpgo.WithHooks(&mcpgo.Hooks{
 				OnAfterInitialize: []mcpgo.OnAfterInitializeFunc{
 					func(_ context.Context, _ any, _ *mcp.InitializeRequest, result *mcp.InitializeResult) {

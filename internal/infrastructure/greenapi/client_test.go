@@ -9,10 +9,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/domain"
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/infrastructure"
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/infrastructure/greenapi"
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/infrastructure/monitoring"
+	"github.com/green-api/mcp-gateway-waba/internal/domain"
+	"github.com/green-api/mcp-gateway-waba/internal/infrastructure"
+	"github.com/green-api/mcp-gateway-waba/internal/infrastructure/greenapi"
+	"github.com/green-api/mcp-gateway-waba/internal/infrastructure/monitoring"
 )
 
 const (

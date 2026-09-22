@@ -1,4 +1,4 @@
-module github.com/green-api/green-api-mcp-gateway-waba
+module github.com/green-api/mcp-gateway-waba
 
 go 1.25.1
 

@@ -11,8 +11,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/application"
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/domain"
+	"github.com/green-api/mcp-gateway-waba/internal/application"
+	"github.com/green-api/mcp-gateway-waba/internal/domain"
 )
 
 // contextKey is a custom type for context keys to avoid collisions.

@@ -10,4 +10,4 @@ test:
 	go test -v -race -count=1 ./... -coverprofile=cover.out
 
 build:
-	CGO_ENABLED=0 go build -ldflags="-s -w -X main.version=$(shell git describe --tags --always 2>/dev/null || echo dev)" -o green-api-mcp-gateway-waba ./cmd/server
+	CGO_ENABLED=0 go build -ldflags="-s -w -X main.version=$(shell git describe --tags --always 2>/dev/null || echo dev)" -o mcp-gateway-waba ./cmd/server

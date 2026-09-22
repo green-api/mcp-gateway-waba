@@ -1,12 +1,12 @@
 # Contributing
 
-Thanks for considering a contribution to `green-api-mcp-gateway-waba`.
+Thanks for considering a contribution to `mcp-gateway-waba`.
 
 ## Quick start
 
 ```bash
-git clone https://github.com/green-api/green-api-mcp-gateway-waba.git
-cd green-api-mcp-gateway-waba
+git clone https://github.com/green-api/mcp-gateway-waba.git
+cd mcp-gateway-waba
 make lint test build
 ```
 
@@ -27,7 +27,7 @@ Please include:
 - What you expected to happen
 - What actually happened
 - Steps to reproduce (minimal config / commands)
-- Output of `./green-api-mcp-gateway-waba --version` (or commit SHA if built from source)
+- Output of `./mcp-gateway-waba --version` (or commit SHA if built from source)
 - Relevant logs with secrets redacted
 
 See `.github/ISSUE_TEMPLATE/` for bug-report and feature-request templates.

@@ -21,7 +21,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/domain"
+	"github.com/green-api/mcp-gateway-waba/internal/domain"
 )
 
 // Receiver is an HTTP server that accepts webhook pushes from sw-webhooker-go

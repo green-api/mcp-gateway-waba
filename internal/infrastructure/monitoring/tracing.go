@@ -15,7 +15,7 @@ import (
 	noop "go.opentelemetry.io/otel/trace/noop"
 )
 
-const tracerName = "green-api-mcp-gateway-waba"
+const tracerName = "mcp-gateway-waba"
 
 // TracerProvider wraps the OTel SDK TracerProvider for lifecycle management.
 type TracerProvider struct {
@@ -33,7 +33,7 @@ func NewTracerProvider(enabled bool, serviceName string) *TracerProvider {
 	}
 
 	if serviceName == "" {
-		serviceName = "green-api-mcp-gateway-waba"
+		serviceName = "mcp-gateway-waba"
 	}
 
 	exp, err := stdouttrace.New(stdouttrace.WithPrettyPrint())

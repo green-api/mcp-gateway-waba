@@ -1,6 +1,6 @@
 # Binaries
-green-api-mcp-gateway-waba
-green-api-mcp-gateway-waba-linux
+mcp-gateway-waba
+mcp-gateway-waba-linux
 *.exe
 
 # Test artifacts

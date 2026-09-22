@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/application"
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/domain"
+	"github.com/green-api/mcp-gateway-waba/internal/application"
+	"github.com/green-api/mcp-gateway-waba/internal/domain"
 )
 
 type mockCredentialStore struct {

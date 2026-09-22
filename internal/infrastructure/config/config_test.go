@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/infrastructure/config"
+	"github.com/green-api/mcp-gateway-waba/internal/infrastructure/config"
 )
 
 // writeTemp writes content to a temp file and returns its path.

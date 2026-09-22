@@ -16,8 +16,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/application"
-	"github.com/green-api/green-api-mcp-gateway-waba/internal/domain"
+	"github.com/green-api/mcp-gateway-waba/internal/application"
+	"github.com/green-api/mcp-gateway-waba/internal/domain"
 )
 
 //go:embed templates/authorize.html

@@ -14,7 +14,7 @@ RUN go mod download
 COPY . .
 RUN VERSION=$(git describe --tags --always 2>/dev/null || echo "dev") && \
     CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-    go build -trimpath -ldflags="-s -w -X main.version=${VERSION}" -o /app/green-api-mcp-gateway-waba ./cmd/server
+    go build -trimpath -ldflags="-s -w -X main.version=${VERSION}" -o /app/mcp-gateway-waba ./cmd/server
 
 # ─── Stage 2: Runtime ────────────────────────────────────────────────────────
 FROM scratch
@@ -25,7 +25,7 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 
 # Copy the compiled binary.
-COPY --from=builder /app/green-api-mcp-gateway-waba /green-api-mcp-gateway-waba
+COPY --from=builder /app/mcp-gateway-waba /mcp-gateway-waba
 
 # Optional: copy the example config so users can mount their own over it.
 COPY --from=builder /src/config/config.example.yaml /config/config.example.yaml
@@ -34,4 +34,4 @@ COPY --from=builder /src/config/config.example.yaml /config/config.example.yaml
 # For SSE/HTTP mode expose port 8090 and optionally 8091 (webhook receiver).
 EXPOSE 8090 8091
 
-ENTRYPOINT ["/green-api-mcp-gateway-waba"]
+ENTRYPOINT ["/mcp-gateway-waba"]
