@@ -295,6 +295,13 @@ func (m *ProxyAuthManager) OAuthTokenHandler() http.HandlerFunc {
 	return m.oauth.TokenHandler()
 }
 
+func (m *ProxyAuthManager) OAuthRegisterHandler() http.HandlerFunc {
+	if m.oauth == nil {
+		return nil
+	}
+	return m.oauth.RegisterHandler()
+}
+
 // ProxyAuthMiddleware returns HTTP middleware that extracts and validates credentials.
 func (m *ProxyAuthManager) ProxyAuthMiddleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {

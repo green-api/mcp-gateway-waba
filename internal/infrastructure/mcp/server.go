@@ -264,6 +264,9 @@ func registerOAuthEndpoints(mux *http.ServeMux, authManager *infrastructure.Prox
 	if h := authManager.OAuthTokenHandler(); h != nil {
 		mux.HandleFunc("/token", h)
 	}
+	if h := authManager.OAuthRegisterHandler(); h != nil {
+		mux.HandleFunc("/register", h)
+	}
 }
 
 // startCacheCleanup runs periodic OAuth/credential cache cleanup until ctx is cancelled.

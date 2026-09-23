@@ -171,6 +171,7 @@ func (o *OAuthServer) MetadataHandler() http.HandlerFunc {
 			"issuer":                                o.issuerURL,
 			"authorization_endpoint":                o.issuerURL + "/authorize",
 			"token_endpoint":                        o.issuerURL + "/token",
+			"registration_endpoint":                 o.issuerURL + "/register",
 			"response_types_supported":              []string{"code"},
 			"grant_types_supported":                 []string{"authorization_code"},
 			"code_challenge_methods_supported":      []string{"S256"},
@@ -178,6 +179,70 @@ func (o *OAuthServer) MetadataHandler() http.HandlerFunc {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(w).Encode(meta)
+	}
+}
+
+// ── RFC 7591: Dynamic Client Registration ────────────────────────────────────
+
+type clientRegistrationRequest struct {
+	RedirectURIs            []string `json:"redirect_uris"`
+	ClientName              string   `json:"client_name,omitempty"`
+	TokenEndpointAuthMethod string   `json:"token_endpoint_auth_method,omitempty"`
+}
+
+func (o *OAuthServer) RegisterHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		setCORSHeaders(w)
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		if r.Method != http.MethodPost {
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		var req clientRegistrationRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeTokenError(w, "invalid_client_metadata", "request body must be a JSON object")
+			return
+		}
+		if len(req.RedirectURIs) == 0 {
+			writeTokenError(w, "invalid_redirect_uri", "redirect_uris is required")
+			return
+		}
+		for _, uri := range req.RedirectURIs {
+			if u, err := url.Parse(uri); err != nil || u.Scheme == "" || u.Host == "" {
+				writeTokenError(w, "invalid_redirect_uri", fmt.Sprintf("invalid redirect_uri %q", uri))
+				return
+			}
+		}
+		if req.TokenEndpointAuthMethod != "" && req.TokenEndpointAuthMethod != "none" {
+			writeTokenError(w, "invalid_client_metadata", "only token_endpoint_auth_method none is supported")
+			return
+		}
+
+		clientID, err := randomToken(16)
+		if err != nil {
+			writeTokenError(w, "server_error", "could not generate client_id")
+			return
+		}
+
+		resp := map[string]interface{}{
+			"client_id":                  clientID,
+			"client_id_issued_at":        time.Now().Unix(),
+			"redirect_uris":              req.RedirectURIs,
+			"grant_types":                []string{"authorization_code"},
+			"response_types":             []string{"code"},
+			"token_endpoint_auth_method": "none",
+		}
+		if req.ClientName != "" {
+			resp["client_name"] = req.ClientName
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Cache-Control", "no-store")
+		w.WriteHeader(http.StatusCreated)
+		_ = json.NewEncoder(w).Encode(resp)
 	}
 }
 
